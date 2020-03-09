@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Settings">
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Repeat alarm every"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/delayTextHours"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginStart="16dp"
+        android:layout_weight="1"
+        android:autofillHints="Hours"
+        android:gravity="start"
+        android:hint="Hours"
+        android:inputType="number"
+        android:nextFocusLeft="@+id/delayTextMinutes"
+        android:nextFocusRight="@+id/delayTextMinutes"
+        android:nextFocusUp="@+id/delayTextMinutes"
+        android:nextFocusDown="@+id/delayTextMinutes"
+        android:nextFocusForward="@+id/delayTextMinutes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView1" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
+        android:text=":"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/delayTextHours"
+        app:layout_constraintEnd_toStartOf="@+id/delayTextMinutes"
+        app:layout_constraintStart_toEndOf="@+id/delayTextHours" />
+
+    <EditText
+        android:id="@+id/delayTextMinutes"
+        android:layout_width="75dp"
+        android:layout_height="47dp"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:hint="Minutes"
+        android:inputType="number"
+        android:gravity="start"
+        app:layout_constraintStart_toEndOf="@+id/delayTextHours"
+        app:layout_constraintTop_toTopOf="@+id/delayTextHours"
+        android:autofillHints="Minutes" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="How many times repeat the alarm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delayTextHours" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_number"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/repeatsText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/repeatsText" />
+
+    <EditText
+        android:id="@+id/repeatsText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="64dp"
+        android:ems="10"
+        android:inputType="numberSigned"
+        app:layout_constraintEnd_toEndOf="@+id/switch_number"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/switch_number"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Hour after which alarm ends"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch_number" />
+
+    <EditText
+        android:id="@+id/finalHourText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="64dp"
+        android:ems="10"
+        android:inputType="none"
+        app:layout_constraintEnd_toEndOf="@+id/switch_hour"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/switch_hour"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_hour"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/finalHourText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/finalHourText" />
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
