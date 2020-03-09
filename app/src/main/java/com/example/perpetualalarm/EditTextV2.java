@@ -3,7 +3,6 @@ package com.example.perpetualalarm;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.EditText;
 
 public class EditTextV2 extends androidx.appcompat.widget.AppCompatEditText
 {

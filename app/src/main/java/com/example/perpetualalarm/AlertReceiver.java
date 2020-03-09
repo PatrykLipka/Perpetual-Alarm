@@ -69,7 +69,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
 
     private String updateTimeText(double tmpDelay) {
-        String timeText = "Next alarm set for: \n";
+        String timeText = "Next alarm set for: \n\n";
 
         double hoursTemp = tmpDelay / 3600000;
         int hours = (int) hoursTemp;

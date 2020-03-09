@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateTimeText(double tmpDelay) {
-        String timeText = "Next alarm set for: \n";
+        String timeText = "Next alarm set for: \n\n";
        // Toast.makeText(MainActivity.this, "Updating time", Toast.LENGTH_LONG).show();
         double hoursTemp = tmpDelay / 3600000;
         int hours = (int) hoursTemp;

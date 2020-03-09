@@ -15,6 +15,7 @@
         android:layout_marginTop="120dp"
         android:layout_marginEnd="16dp"
         android:text="No Alarm set"
+        android:gravity="center"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,14 +24,16 @@
     <Button
         android:id="@+id/button_set"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:text="set"
+        android:ems="6"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7" />
 
     <Button
         android:id="@+id/button_cancel"
@@ -41,17 +44,20 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:text="cancel alarm"
+        android:ems="7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button_settings"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:ems="7"
         android:text="settings"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/button_cancel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
