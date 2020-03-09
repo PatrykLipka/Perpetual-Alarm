@@ -201,6 +201,8 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         textDelayHours.setText(sharedPreferences.getString("delayHours", ""));
         textDelayHours.setSelection(textDelayHours.getText().length());
@@ -215,6 +217,8 @@ public class Settings extends AppCompatActivity {
         changedByUserAmount = !amountSwitch.isChecked();
 
     }
+
+
 
 
 

@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <EditText
+            <com.example.perpetualalarm.EditTextV2
                 android:id="@+id/delayTextHours"
                 android:layout_width="75dp"
                 android:layout_height="46dp"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <EditText
+            <com.example.perpetualalarm.EditTextV2
                 android:id="@+id/delayTextMinutes"
                 android:layout_width="75dp"
                 android:layout_height="47dp"
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <EditText
+            <com.example.perpetualalarm.EditTextV2
                 android:id="@+id/repeatsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
