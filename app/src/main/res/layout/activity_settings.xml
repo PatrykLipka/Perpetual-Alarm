@@ -15,7 +15,8 @@
         android:layout_marginTop="16dp"
         android:text="Repeat alarm every"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
         android:id="@+id/Linear"
@@ -46,7 +47,8 @@
                 android:nextFocusDown="@+id/delayTextMinutes"
                 android:nextFocusForward="@+id/delayTextMinutes"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1" />
+                app:layout_constraintTop_toBottomOf="@+id/textView1"
+                tools:ignore="HardcodedText" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,7 +63,8 @@
             android:text="and"
             app:layout_constraintBottom_toBottomOf="@+id/delayTextHours"
             app:layout_constraintEnd_toStartOf="@+id/delayTextMinutes"
-            app:layout_constraintStart_toEndOf="@+id/delayTextHours" />
+            app:layout_constraintStart_toEndOf="@+id/delayTextHours"
+            tools:ignore="HardcodedText" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -79,7 +82,8 @@
                 android:hint="Minutes"
                 android:inputType="number"
                 app:layout_constraintStart_toEndOf="@+id/delayTextHours"
-                app:layout_constraintTop_toTopOf="@+id/delayTextHours" />
+                app:layout_constraintTop_toTopOf="@+id/delayTextHours"
+                tools:ignore="HardcodedText" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,17 +112,18 @@
         app:layout_constraintEnd_toEndOf="@+id/switch_number"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/switch_number"
-        app:layout_constraintTop_toBottomOf="@+id/Linear">
+        app:layout_constraintTop_toBottomOf="@+id/Linear"
+        tools:ignore="DisableBaselineAlignment">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <com.example.perpetualalarm.EditTextV2
                 android:id="@+id/repeatsText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="16dp"
                 android:ems="10"
                 android:hint="Amount of alarms"
@@ -132,7 +137,7 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/switch_number"
                 app:layout_constraintTop_toBottomOf="@+id/textView2"
-                tools:ignore="Suspicious0dp" />
+                tools:ignore="HardcodedText,Suspicious0dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
@@ -148,10 +153,11 @@
         app:layout_constraintEnd_toEndOf="@+id/switch_hour"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/switch_hour"
-        app:layout_constraintTop_toBottomOf="@+id/Linear2">
+        app:layout_constraintTop_toBottomOf="@+id/Linear2"
+        android:baselineAligned="false">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
@@ -166,7 +172,9 @@
         app:layout_constraintEnd_toEndOf="@+id/switch_hour"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/switch_hour"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:ignore="HardcodedText"
+        android:autofillHints="Hour after which alarm cycle ends" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

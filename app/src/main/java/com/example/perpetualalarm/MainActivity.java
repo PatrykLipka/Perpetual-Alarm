@@ -1,5 +1,6 @@
 package com.example.perpetualalarm;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -201,27 +203,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateTimeText(double tmpDelay) {
         String timeText = "Next alarm set for: \n\n";
-       // Toast.makeText(MainActivity.this, "Updating time", Toast.LENGTH_LONG).show();
         double hoursTemp = tmpDelay / 3600000;
         int hours = (int) hoursTemp;
         int minutes = (int) (tmpDelay - hours * 3600000) / 60000;
-        int seconds = (int) (tmpDelay - hours * 3600000 - minutes * 60000) / 1000;
 
         Calendar calendar = Calendar.getInstance();
         int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
         int currentMinutes = calendar.get(Calendar.MINUTE);
-        int currentSeconds = calendar.get(Calendar.SECOND);
+
+        int hoursInMinutes=hours*60+minutes;
+        int addedDays=0;
+        int hoursForDays=(currentHours*60+currentMinutes+hoursInMinutes)/60;
+
+        while(hoursForDays>23)
+        {
+            addedDays++;
+            hoursForDays-=24;
+        }
+
+        calendar.add(Calendar.DATE,addedDays);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(calendar.getTime());
+
+        timeText+=formattedDate+"\n";
         hours += currentHours;
         minutes += currentMinutes;
-        seconds += currentSeconds;
-        if (seconds > 59) {
-            int iterator = 0;
-            while (seconds > 59) {
-                seconds -= 60;
-                iterator++;
-            }
-            minutes += iterator;
-        }
         if (minutes > 59) {
             int iterator = 0;
             while (minutes > 59) {
@@ -265,12 +271,22 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        mTextView = findViewById(R.id.textView);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String timeText = sharedPreferences.getString("timeText", "No alarm set");
+        mTextView.setText(timeText);
+
         active = true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        mTextView = findViewById(R.id.textView);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String timeText = sharedPreferences.getString("timeText", "No alarm set");
+        mTextView.setText(timeText);
 
         active = true;
     }

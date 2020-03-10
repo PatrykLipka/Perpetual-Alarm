@@ -78,6 +78,17 @@ public class Settings extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     reformatTime();
+                    textDelayMinutes.setSelection(textDelayMinutes.getText().length());
+                    textDelayHours.setSelection(textDelayHours.getText().length());
+                }
+            }
+        });
+
+        textDelayHours.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    textDelayHours.setSelection(textDelayHours.getText().length());
                 }
             }
         });
@@ -110,6 +121,7 @@ public class Settings extends AppCompatActivity {
                         changedByFocusChange=true;
                         amountSwitch.setChecked(true);
                     }
+                    textAmountOfAlerts.setSelection(textAmountOfAlerts.getText().length());
 
                 }
             }

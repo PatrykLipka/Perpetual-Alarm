@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 
 import androidx.core.app.NotificationCompat;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
@@ -43,54 +44,58 @@ public class AlertReceiver extends BroadcastReceiver {
                 editor.apply();
             }
         }else{
-                double delay = Double.parseDouble(sharedPreferences.getString("setDelay", ""));
-                timeText=updateTimeText(delay);
-                editor.putString("timeText", timeText);
-                editor.apply();
-            }
-
-
-            if (MainActivity.isActive()) {
-                MainActivity.changeText(timeText);
-            }
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            boolean isScreenOn = pm.isScreenOn();
-            if (!isScreenOn) {
-                @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "MyLock");
-                wl.acquire(1000);
-                @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyCpuLock");
-
-                wl_cpu.acquire(1000);
-            }
-            //play actual alarmsound here either with soundpool or mediaplayer
-            notificationHelper.getManager().notify(1, nb.build());
+            double delay = Double.parseDouble(sharedPreferences.getString("setDelay", ""));
+            timeText=updateTimeText(delay);
+            editor.putString("timeText", timeText);
+            editor.apply();
         }
+
+
+        if (MainActivity.isActive()) {
+            MainActivity.changeText(timeText);
+        }
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        boolean isScreenOn = pm.isScreenOn();
+        if (!isScreenOn) {
+            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "MyLock");
+            wl.acquire(1000);
+            @SuppressLint("InvalidWakeLockTag") PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyCpuLock");
+
+            wl_cpu.acquire(1000);
+        }
+        //play actual alarmsound here either with soundpool or mediaplayer
+        notificationHelper.getManager().notify(1, nb.build());
+    }
 
 
 
     private String updateTimeText(double tmpDelay) {
         String timeText = "Next alarm set for: \n\n";
-
         double hoursTemp = tmpDelay / 3600000;
         int hours = (int) hoursTemp;
         int minutes = (int) (tmpDelay - hours * 3600000) / 60000;
-        int seconds = (int) (tmpDelay - hours * 3600000 - minutes * 60000) / 1000;
 
         Calendar calendar = Calendar.getInstance();
         int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
         int currentMinutes = calendar.get(Calendar.MINUTE);
-        int currentSeconds = calendar.get(Calendar.SECOND);
+
+        int hoursInMinutes=hours*60+minutes;
+        int addedDays=0;
+        int hoursForDays=(currentHours*60+currentMinutes+hoursInMinutes)/60;
+
+        while(hoursForDays>23)
+        {
+            addedDays++;
+            hoursForDays-=24;
+        }
+
+        calendar.add(Calendar.DATE,addedDays);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(calendar.getTime());
+
+        timeText+=formattedDate+"\n";
         hours += currentHours;
         minutes += currentMinutes;
-        seconds += currentSeconds;
-        if (seconds > 59) {
-            int iterator = 0;
-            while (seconds > 59) {
-                seconds -= 60;
-                iterator++;
-            }
-            minutes += iterator;
-        }
         if (minutes > 59) {
             int iterator = 0;
             while (minutes > 59) {

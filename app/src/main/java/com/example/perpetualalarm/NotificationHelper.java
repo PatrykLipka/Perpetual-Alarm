@@ -48,22 +48,22 @@ public class NotificationHelper extends ContextWrapper {
     }
 
     public NotificationCompat.Builder getChannelNotification() {
-            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 // Vibrate for 500 milliseconds
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                //deprecated in API 26
-                v.vibrate(1000);
-            }
-            Intent resultIntent = new Intent(this, MainActivity.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+        } else {
+            //deprecated in API 26
+            v.vibrate(1000);
+        }
+        Intent resultIntent = new Intent(this, MainActivity.class);
         PendingIntent resultPendingIntent=PendingIntent.getActivity(this,1,resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            return new NotificationCompat.Builder(getApplicationContext(), channelID)
-                    .setContentTitle("Alarm!")
-                    .setContentText("It works!")
-                    .setSmallIcon(R.drawable.ic_android)
-                    .setAutoCancel(true)
-                    .setContentIntent(resultPendingIntent);
+        return new NotificationCompat.Builder(getApplicationContext(), channelID)
+                .setContentTitle("Alarm!")
+                .setContentText("It works!")
+                .setSmallIcon(R.drawable.ic_android)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent);
     }
 }
