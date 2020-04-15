@@ -62,6 +62,7 @@ public class Settings extends AppCompatActivity {
         editor.putBoolean("hourSwitchState", hourSwitchState);
         editor.putBoolean("amountSwitchState", amountSwitchState);
         editor.apply();
+        finish();
     }
 
     @Override
@@ -247,6 +248,13 @@ public class Settings extends AppCompatActivity {
         super.onStart();
         changedByUserHour = !hourSwitch.isChecked();
         changedByUserAmount = !amountSwitch.isChecked();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 
     private void reformatTime() {
