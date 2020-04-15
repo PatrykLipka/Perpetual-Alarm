@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
@@ -31,60 +33,37 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         mTextView = findViewById(R.id.textView);
-
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String timeText = sharedPreferences.getString("timeText", "No alarm set");
         mTextView.setText(timeText);
 
-
         Button buttonSet = findViewById(R.id.button_set);
         buttonSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                double delayHours=0;
-                double delayMinutes=0;
-                boolean amountRestricted = sharedPreferences.getBoolean("amountSwitchState", false);
-                if (sharedPreferences.getString("delayHours", "0").equals("") && sharedPreferences.getString("delayMinutes", "0").equals("")) {
-                    delay = 0.0;
-                } else if(sharedPreferences.getString("delayHours", "0").equals("")){
-                    delayMinutes = Double.parseDouble(sharedPreferences.getString("delayMinutes", "0"));
-                    delay = 60*1000*delayMinutes;
-                }else if(sharedPreferences.getString("delayMinutes", "0").equals("")){
-                    delayHours = Double.parseDouble(sharedPreferences.getString("delayHours", "0"));
-                    delay = (60 * 60 * 1000) * delayHours;
-                }else{
-                    delayMinutes = Double.parseDouble(sharedPreferences.getString("delayMinutes", "0"));
-                    delayHours = Double.parseDouble(sharedPreferences.getString("delayHours", "0"));
-                    delay = (60 * 60 * 1000) * delayHours+ (60*1000) * delayMinutes;
-                }
+                if (!mTextView.getText().toString().equals("No alarm set")) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which){
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    //Yes button clicked
+                                    hourSet();
+                                    break;
 
-                if (sharedPreferences.getString("amount", "0").equals("")) {
-                    howManyTimes = 0;
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage("Do you want to change the alarm?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
                 } else {
-                    howManyTimes = Integer.parseInt(sharedPreferences.getString("amount", "0"));
-                }
-
-//                if (delay != 0.0) {
-//                    delay = (60 * 60 * 1000) * delayHours+60*1000*delayMinutes;
-//                }
-
-                if (amountRestricted && howManyTimes <= 0) {
-                    cancelAlarm();
-                } else if (delay>0) {
-                    double tmpDelay = delay;
-                    startAlarm();
-                    if(sharedPreferences.getInt("desiredBursts", 0)>0){
-                        updateTimeText(tmpDelay);
-                    }
-                    else{
-                        mTextView.setText("No alarm set");
-                    }
-                } else {
-                    Toast.makeText(MainActivity.this, "Set higher delay!", Toast.LENGTH_LONG).show();
+                    hourSet();
                 }
             }
         });
@@ -106,6 +85,47 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    private void hourSet(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        double delayHours=0;
+        double delayMinutes=0;
+        boolean amountRestricted = sharedPreferences.getBoolean("amountSwitchState", false);
+        if (sharedPreferences.getString("delayHours", "0").equals("") && sharedPreferences.getString("delayMinutes", "0").equals("")) {
+            delay = 0.0;
+        } else if(sharedPreferences.getString("delayHours", "0").equals("")){
+            delayMinutes = Double.parseDouble(sharedPreferences.getString("delayMinutes", "0"));
+            delay = 60*1000*delayMinutes;
+        }else if(sharedPreferences.getString("delayMinutes", "0").equals("")){
+            delayHours = Double.parseDouble(sharedPreferences.getString("delayHours", "0"));
+            delay = (60 * 60 * 1000) * delayHours;
+        }else{
+            delayMinutes = Double.parseDouble(sharedPreferences.getString("delayMinutes", "0"));
+            delayHours = Double.parseDouble(sharedPreferences.getString("delayHours", "0"));
+            delay = (60 * 60 * 1000) * delayHours+ (60*1000) * delayMinutes;
+        }
+
+        if (sharedPreferences.getString("amount", "0").equals("")) {
+            howManyTimes = 0;
+        } else {
+            howManyTimes = Integer.parseInt(sharedPreferences.getString("amount", "0"));
+        }
+
+        if (amountRestricted && howManyTimes <= 0) {
+            cancelAlarm();
+        } else if (delay>0) {
+            double tmpDelay = delay;
+            startAlarm();
+            if(sharedPreferences.getInt("desiredBursts", 0)>0){
+                updateTimeText(tmpDelay);
+            }
+            else{
+                mTextView.setText("No alarm set");
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "Set higher delay!", Toast.LENGTH_LONG).show();
+        }
+    }
 
     private void startAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -160,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
         if(amountRestricted && hourRestricted)
         {
             editor.putInt("desiredBursts", Math.min(howManyTimes, howManyTimesFromHour));
-            Toast.makeText(MainActivity.this, "Both restrictions "+howManyTimes+" and "+ howManyTimesFromHour, Toast.LENGTH_LONG).show();
+            int lowerRestriction = Math.min(howManyTimes, howManyTimesFromHour);
+            Toast.makeText(MainActivity.this, "Both restrictions "+lowerRestriction, Toast.LENGTH_LONG).show();
             editor.putBoolean("setRestricted", true);
         }else if(amountRestricted){
             editor.putInt("desiredBursts", howManyTimes);
@@ -289,6 +310,20 @@ public class MainActivity extends AppCompatActivity {
         mTextView.setText(timeText);
 
         active = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+        finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        active = false;
+        finish();
     }
 
     @Override

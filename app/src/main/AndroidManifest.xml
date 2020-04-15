@@ -12,6 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".DialogActivity"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/MyTheme"
+            android:fitsSystemWindows="true"
+        />
+
         <receiver android:name=".SetWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -21,6 +28,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/set_widget_info" />
         </receiver>
+
+
 
         <activity android:name=".Settings" />
         <activity
