@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+    @SuppressLint("StaticFieldLeak")
     public static TextView mTextView;
     private Double delay;
     private int howManyTimes;
@@ -33,6 +34,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        View contentView = (View)findViewById(R.id.wholeActivity);
+        contentView.setOnTouchListener(new OnSwipeTouchListener(MainActivity.this) {
+            public void onSwipeTop() {
+                Toast.makeText(MainActivity.this, "top", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeRight() {
+                openSettings();
+            }
+            public void onSwipeLeft() {
+                openSettings();
+            }
+            public void onSwipeBottom() {
+                Toast.makeText(MainActivity.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
+
+        });
         mTextView = findViewById(R.id.textView);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -323,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         active = false;
-        finish();
+        finishAffinity();
     }
 
     @Override

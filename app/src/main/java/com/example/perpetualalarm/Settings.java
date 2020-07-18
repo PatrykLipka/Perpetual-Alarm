@@ -4,6 +4,7 @@ package com.example.perpetualalarm;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -69,6 +70,22 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        View contentView = (View)findViewById(R.id.wholeActivity);
+        contentView.setOnTouchListener(new OnSwipeTouchListener(Settings.this) {
+            public void onSwipeTop() {
+                Toast.makeText(Settings.this, "top", Toast.LENGTH_SHORT).show();
+            }
+            public void onSwipeRight() {
+                openMain();
+            }
+            public void onSwipeLeft() {
+                openMain();
+            }
+            public void onSwipeBottom() {
+                Toast.makeText(Settings.this, "bottom", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         textDelayHours = findViewById(R.id.delayTextHours);
         textDelayMinutes = findViewById(R.id.delayTextMinutes);
@@ -254,7 +271,13 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        finish();
+        //finish();
+        openMain();
+    }
+
+    public void openMain() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void reformatTime() {
