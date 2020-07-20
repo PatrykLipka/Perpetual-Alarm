@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,14 +46,19 @@ public class DialogActivity extends AppCompatActivity {
                         case DialogInterface.BUTTON_POSITIVE:
                             //Yes button clicked
                             hourSet();
-
-                            finishAffinity();
+                            String input = sharedPreferences.getString("timeTextNoDate", "No alarm set");
+                            int desiredBursts = sharedPreferences.getInt("desiredBursts", 0);
+                            if(desiredBursts>1){
+                                input+= "  Remaining bursts: " + desiredBursts;
+                            }
+                            startService(input);
+                            finish();
                             break;
 
                         case DialogInterface.BUTTON_NEGATIVE:
                             //No button clicked
 
-                            finishAffinity();
+                            finish();
                             break;
                     }
                 }
@@ -63,17 +69,31 @@ public class DialogActivity extends AppCompatActivity {
                     .setNegativeButton("No", dialogClickListener).setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    finishAffinity();
+                    finish();
                 }
             }).show();
 
         } else {
             hourSet();
-            finishAffinity();
+            String input = sharedPreferences.getString("timeTextNoDate", "No alarm set");
+            int desiredBursts = sharedPreferences.getInt("desiredBursts", 0);
+            if(desiredBursts>1){
+                input+= "  Remaining bursts: " + desiredBursts;
+            }
+            startService(input);
+            finish();
         }
 
     }
 
+    public void startService(String input) {
+        if (!input.equals("No alarm set")) {
+            Intent serviceIntent = new Intent(this, ForegroundNotification.class);
+            serviceIntent.putExtra("inputExtra", input);
+            serviceIntent.putExtra("inputType", "Alarm set");
+            ContextCompat.startForegroundService(this, serviceIntent);
+        }
+    }
 
     private void hourSet() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -186,6 +206,7 @@ public class DialogActivity extends AppCompatActivity {
 
     private void updateTimeText(double tmpDelay) {
         String timeText = "Next alarm set for: \n\n";
+        String timeTextNoDate = "Next alarm set for: ";
         double hoursTemp = tmpDelay / 3600000;
         int hours = (int) hoursTemp;
         int minutes = (int) (tmpDelay - hours * 3600000) / 60000;
@@ -194,20 +215,20 @@ public class DialogActivity extends AppCompatActivity {
         int currentHours = calendar.get(Calendar.HOUR_OF_DAY);
         int currentMinutes = calendar.get(Calendar.MINUTE);
 
-        int hoursInMinutes = hours * 60 + minutes;
-        int addedDays = 0;
-        int hoursForDays = (currentHours * 60 + currentMinutes + hoursInMinutes) / 60;
+        int hoursInMinutes=hours*60+minutes;
+        int addedDays=0;
+        int hoursForDays=(currentHours*60+currentMinutes+hoursInMinutes)/60;
 
-        while (hoursForDays > 23) {
+        while(hoursForDays>23)
+        {
             addedDays++;
-            hoursForDays -= 24;
+            hoursForDays-=24;
         }
 
-        calendar.add(Calendar.DATE, addedDays);
+        calendar.add(Calendar.DATE,addedDays);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String formattedDate = df.format(calendar.getTime());
 
-        timeText += formattedDate + "\n";
         hours += currentHours;
         minutes += currentMinutes;
         if (minutes > 59) {
@@ -224,14 +245,18 @@ public class DialogActivity extends AppCompatActivity {
             }
         }
         if (minutes < 10) {
-            timeText += hours + ":0" + minutes + "\n";
+            timeText += hours + ":0" + minutes + "\n" + "Date: " + formattedDate+"\n";
+            timeTextNoDate += hours + ":0" + minutes;
+
         } else {
-            timeText += hours + ":" + minutes + "\n";
+            timeText += hours + ":" + minutes + "\n" + "Date: " + formattedDate+"\n";
+            timeTextNoDate += hours + ":" + minutes;
         }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("timeText", timeText);
+        editor.putString("timeTextNoDate", timeTextNoDate);
         editor.apply();
     }
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonSet = findViewById(R.id.button_set);
         buttonSet.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if (!mTextView.getText().toString().equals("No alarm set")) {
                     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                         @Override
@@ -68,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     //Yes button clicked
                                     hourSet();
+                                    String input = sharedPreferences.getString("timeTextNoDate", "No alarm set");
+                                    int desiredBursts = sharedPreferences.getInt("desiredBursts", 0);
+                                    if(desiredBursts>1){
+                                        input+= "  Remaining bursts: " + desiredBursts;
+                                    }
+                                    startService(input);
                                     break;
 
                                 case DialogInterface.BUTTON_NEGATIVE:
@@ -81,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
                             .setNegativeButton("No", dialogClickListener).show();
                 } else {
                     hourSet();
+                    String input = sharedPreferences.getString("timeTextNoDate", "No alarm set");
+                    int desiredBursts = sharedPreferences.getInt("desiredBursts", 0);
+                    if(desiredBursts>1){
+                        input+= "  Remaining bursts: " + desiredBursts;
+                    }
+                    startService(input);
                 }
             }
         });
@@ -90,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cancelAlarm();
+                stopService();
             }
         });
 
@@ -100,6 +114,19 @@ public class MainActivity extends AppCompatActivity {
                 openSettings();
             }
         });
+    }
+
+    public void startService(String input) {
+        if(!input.equals("No alarm set")) {
+            Intent serviceIntent = new Intent(this, ForegroundNotification.class);
+            serviceIntent.putExtra("inputExtra", input);
+            serviceIntent.putExtra("inputType", "Alarm set");
+            ContextCompat.startForegroundService(this, serviceIntent);
+        }
+    }
+    public void stopService() {
+        Intent serviceIntent = new Intent(this, ForegroundNotification.class);
+        stopService(serviceIntent);
     }
 
 
@@ -231,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("desiredBursts", 0);
         editor.putInt("elapsedBursts", 0);
         editor.putString("timeText", "No alarm set");
+        editor.putString("timeTextNoDate", "No alarm set");
         editor.apply();
 
         alarmManager.cancel(pendingIntent);
@@ -241,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateTimeText(double tmpDelay) {
         String timeText = "Next alarm set for: \n\n";
+        String timeTextNoDate = "Next alarm set for: ";
         double hoursTemp = tmpDelay / 3600000;
         int hours = (int) hoursTemp;
         int minutes = (int) (tmpDelay - hours * 3600000) / 60000;
@@ -263,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String formattedDate = df.format(calendar.getTime());
 
-        timeText+=formattedDate+"\n";
         hours += currentHours;
         minutes += currentMinutes;
         if (minutes > 59) {
@@ -280,14 +308,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (minutes < 10) {
-            timeText += hours + ":0" + minutes + "\n";
+            timeText += hours + ":0" + minutes + "\n" + "Date: " + formattedDate+"\n";
+            timeTextNoDate += hours + ":0" + minutes;
+
         } else {
-            timeText += hours + ":" + minutes + "\n";
+            timeText += hours + ":" + minutes + "\n" + "Date: " + formattedDate+"\n";
+            timeTextNoDate += hours + ":" + minutes;
         }
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("timeText", timeText);
+        editor.putString("timeTextNoDate", timeTextNoDate);
         editor.apply();
         mTextView.setText(timeText);
     }

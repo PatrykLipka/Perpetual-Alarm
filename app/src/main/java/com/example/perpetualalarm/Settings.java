@@ -6,36 +6,44 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SwitchCompat;
 
 import java.util.Calendar;
 import java.util.Date;
 
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener{
     private EditText textDelayHours;
-    String delayHours;
-    String delayMinutes;
+    private String delayHours;
+    private String delayMinutes;
     private EditText textDelayMinutes;
     private EditText textAmountOfAlerts;
     private EditText textLastHour;
+    private TextView vibrationType;
     private SwitchCompat hourSwitch;
     private SwitchCompat amountSwitch;
     private TimePickerDialog timePickerDialog;
     private boolean changedByUserHour;
     private boolean changedByUserAmount;
     private boolean changedByFocusChange;
-    Calendar c;
+    private int typeOfAlarm;
+    private Calendar c;
 
     @Override
     protected void onStop() {
@@ -62,6 +70,7 @@ public class Settings extends AppCompatActivity {
         editor.putString("lastHour", lastHour);
         editor.putBoolean("hourSwitchState", hourSwitchState);
         editor.putBoolean("amountSwitchState", amountSwitchState);
+        editor.putInt("typeOfAlarm", typeOfAlarm);
         editor.apply();
         finish();
     }
@@ -245,12 +254,26 @@ public class Settings extends AppCompatActivity {
         hourSwitch.setChecked(sharedPreferences.getBoolean("hourSwitchState", false));
         changedByUserHour = !hourSwitch.isChecked();
         changedByUserAmount = !amountSwitch.isChecked();
+        typeOfAlarm=sharedPreferences.getInt("typeOfAlarm", 1);
+
+        vibrationType = findViewById(R.id.vibrationType);
+        vibrationType.setText("");
+        switch(typeOfAlarm){
+            case 2:
+                vibrationType.setText("Current: "+"Twice");
+                break;
+            case 3:
+                vibrationType.setText("Current: "+"Wave");
+                break;
+            case 4:
+                vibrationType.setText("Current: "+"Pulse");
+                break;
+            default:
+                vibrationType.setText("Current: "+"Simple");
+                break;
+        }
 
     }
-
-
-
-
 
 
     @Override
@@ -271,7 +294,11 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //finish();
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
         openMain();
     }
 
@@ -312,5 +339,64 @@ public class Settings extends AppCompatActivity {
         textDelayMinutes.setText(delayMinutes);
     }
 
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener((PopupMenu.OnMenuItemClickListener) this);
+        popup.inflate(R.menu.popup_menu);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        switch (item.getItemId()) {
+            case R.id.item1:
+                Toast.makeText(this, "Simple", Toast.LENGTH_SHORT).show();
+                vibrationType.setText("Current: "+"Simple");
+                typeOfAlarm=1;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createOneShot(1000, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    //deprecated in API 26
+                    v.vibrate(1000);
+                }
+                return true;
+            case R.id.item2:
+                Toast.makeText(this, "Twice", Toast.LENGTH_SHORT).show();
+                vibrationType.setText("Current: "+"Twice");
+                typeOfAlarm=2;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createWaveform(new long[]{0, 400, 600, 400}, -1));
+                } else {
+                    //deprecated in API 26
+                    v.vibrate(new long[]{0, 400, 600, 400}, -1);
+                }
+                return true;
+            case R.id.item3:
+                Toast.makeText(this, "Wave", Toast.LENGTH_SHORT).show();
+                vibrationType.setText("Current: "+"Wave");
+                typeOfAlarm=3;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createWaveform(new long[]{0, 400, 400, 500, 500, 600}, -1));
+                } else {
+                    //deprecated in API 26
+                    v.vibrate(new long[]{0, 400, 400, 500, 500, 600}, -1);
+                }
+                return true;
+            case R.id.item4:
+                Toast.makeText(this, "Pulse", Toast.LENGTH_SHORT).show();
+                vibrationType.setText("Current: "+"Pulse");
+                typeOfAlarm=4;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    v.vibrate(VibrationEffect.createWaveform(new long[]{0, 700, 800, 700, 800, 700}, -1));
+                } else {
+                    //deprecated in API 26
+                    v.vibrate(new long[]{0, 700, 800, 700, 800, 700}, -1);
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
 
 }
